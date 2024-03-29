@@ -1,0 +1,14 @@
+version: "1.0"
+profile:
+  name: qodana.starter
+include:
+  - name: StandardJS
+  - name: Eslint
+  - name: Stylelint
+  - name: JSHint
+  - name: TsLint
+  - name: BreakStatementJS
+  - name: ContinueStatementJS
+  - name: DebuggerStatementJS
+  - name: ForLoopThatDoesntUseLoopVariableJS
+  - name: JSTypeOfValues
