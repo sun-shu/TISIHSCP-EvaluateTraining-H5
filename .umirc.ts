@@ -12,8 +12,8 @@ export default defineConfig({
         '@umijs/plugins/dist/tailwindcss',
         '@umijs/plugins/dist/react-query',
     ],
-    publicPath: process.env.NODE_ENV === 'production' ? '/evaluation/' : '/',
-    base: process.env.NODE_ENV === 'production' ? '/evaluation/' : '/',
+    publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
+    base: process.env.NODE_ENV === 'production' ? '/' : '/',
     initialState: {},
     model: {},
     request: {
@@ -22,19 +22,19 @@ export default defineConfig({
     routes: [
         {
             path: '/',
-            component: 'index.tsx',
+            redirect: '/evaluate/evaluate-result',
         },
         {
             path: '/evaluate',
             routes: [
                 {
                     path: '/evaluate',
-                    redirect: '/evaluate/result',
+                    redirect: '/evaluate/evaluate-result',
                 },
-                {path: '/evaluate/cognition-result', component: 'evaluate/cognitionResult/index'},
-                {path: '/evaluate/family-affection-result', component: 'evaluate/familyAffectionResult/index'},
-                {path: '/evaluate/cognitive-training-report', component: 'evaluate/cognitiveTrainingReport/index'},
-                {path: '/evaluate/training-plan', component: 'evaluate/trainingPlan/index'},
+                {path: '/evaluate/evaluate-result', component: 'evaluate/cognitionResult/index'},
+                {path: '/evaluate/train-result', component: 'evaluate/familyAffectionResult/index'},
+                {path: '/evaluate/train-report', component: 'evaluate/cognitiveTrainingReport/index'},
+                {path: '/evaluate/train-plan', component: 'evaluate/trainingPlan/index'},
             ],
         },
         {path: '/*', component: '@/pages/404.tsx'},

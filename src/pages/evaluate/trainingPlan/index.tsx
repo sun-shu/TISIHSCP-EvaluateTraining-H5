@@ -2,6 +2,8 @@ import {Badge, Button, Calendar, CalendarPickerRef, NavBar, Popup} from "antd-mo
 import React, {useRef, useState} from "react";
 import ChangDateIcon from "@/assets/icon/change-date.png";
 import dayjs from "dayjs";
+import {LeftOutline, RightOutline} from "antd-mobile-icons";
+import {history} from "@@/core/history";
 
 const CognitiveTrainingOverviewComponent = () => {
 
@@ -106,7 +108,6 @@ const DatePickerComponent = ({dateRange, currentDate, setCurrentDate}) => {
                 <div className="relative bg-white pr-[24px] text-right" onClick={() => {
                     setVisible1(false)
                     setCurrentDate(val)
-
                 }}>
                     <Button color="primary">确认</Button>
                 </div>
@@ -114,6 +115,88 @@ const DatePickerComponent = ({dateRange, currentDate, setCurrentDate}) => {
 
 
         </div>
+    </>)
+}
+
+const TrainingPlanItemComponent = ({title}) => {
+    return (<>
+        <div
+            className="w-[311px] h-[38px] px-3 py-2 bg-amber-400 bg-opacity-5 border-l-2 border-[#D8B438] justify-start items-start gap-6 inline-flex">
+            <div className="text-gray-600 text-base font-bold font-['Alibaba PuHuiTi 3.0']">{title}
+            </div>
+            <div className="text-gray-600 text-base font-normal font-['Alibaba PuHuiTi 3.0']">7/12
+            </div>
+        </div>
+    </>)
+}
+const TrainingPlanItemListComponent = () => {
+
+    const amList = [
+        {
+            title: '怀旧认知训练',
+        },
+        {
+            title: '怀旧认知训练',
+        },
+        {
+            title: '怀旧认知训练',
+        },
+    ]
+
+    const pmList = [
+        {
+            title: '怀旧认知训练',
+        },
+        {
+            title: '怀旧认知训练',
+        },
+        {
+            title: '怀旧认知训练',
+        },
+    ]
+
+    return (<>
+        <div className="w-full">
+            <div
+                className=" mx-3 justify-start items-center gap-2 inline-flex  py-[24px] border-b-[#F5ECCD] border-b-2">
+                <div className="text-zinc-800 text-base font-normal font-['Alibaba PuHuiTi 3.0'] leading-snug">上午
+                </div>
+                <div className="grow shrink basis-0 flex-col justify-start items-center gap-2.5 inline-flex">
+                    {amList.map((item, index) => {
+                        return (
+                            <div
+                                className="w-[311px] h-[38px] px-3 py-2 bg-amber-400 bg-opacity-5 border-l-2 border-[#D8B438] justify-start items-start gap-6 inline-flex">
+                                <div className="text-gray-600 text-base font-bold font-['Alibaba PuHuiTi 3.0']">综合认知训练
+                                </div>
+                                <div className="text-gray-600 text-base font-normal font-['Alibaba PuHuiTi 3.0']">7/12
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+
+
+            <div className=" px-3 justify-start items-center gap-2 inline-flex  py-[24px]">
+                <div className="text-zinc-800 text-base font-normal font-['Alibaba PuHuiTi 3.0'] leading-snug">下午
+                </div>
+                <div className="grow shrink basis-0 flex-col justify-start items-center gap-2.5 inline-flex">
+                    {pmList.map((item, index) => {
+                        return (
+                            <div
+                                className="w-[311px] h-[38px] px-3 py-2 bg-amber-400 bg-opacity-5 border-l-2 border-[#D8B438] justify-start items-start gap-6 inline-flex">
+                                <div className="text-gray-600 text-base font-bold font-['Alibaba PuHuiTi 3.0']">综合认知训练
+                                </div>
+                                <div className="text-gray-600 text-base font-normal font-['Alibaba PuHuiTi 3.0']">7/12
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        </div>
+
+
     </>)
 }
 
@@ -144,18 +227,34 @@ const TrainingPlanPage = () => {
             <NavBar backArrow={false}
                     className=" bg-gradient-to-r from-[#E1CB9C] to-[#BFA671] h-[50px]  w-full">
                 <div
-                    className=" text-zinc-900 text-base font-semibold  leading-snug">认知评估结果
+                    className=" text-zinc-900 text-base font-semibold  leading-snug">训练计划
                 </div>
             </NavBar>
             <div style={{
-                height: 'calc(100vh - 50px)',
+                height: 'calc(100vh - 80px)',
             }}
                  className="w-full   gap-4   overflow-y-scroll bg-white ">
                 <CognitiveTrainingOverviewComponent/>
-                <DatePickerComponent currentDate={currentDate} setCurrentDate={setCurrentDate}
-                                     dateRange={[new Date('2020-06-16'), new Date('2026-06-16')]}/>
+                {/*<DatePickerComponent currentDate={currentDate} setCurrentDate={setCurrentDate}*/}
+                {/*                     dateRange={[new Date('2020-06-16'), new Date('2026-06-16')]}/>*/}
+
+                {/*<TrainingPlanItemListComponent/>*/}
+
 
             </div>
+
+            <div className="flex w-full justify-between px-[24px] bg-white h-[35px] align-middle ">
+                <LeftOutline fontSize={24} color="#BFA671" onClick={() => {
+                    history.push('/evaluate/train-report')
+
+                }}/>
+
+                <RightOutline color="#BFA671" fontSize={24} onClick={() => {
+                    history.push('/evaluate/evaluate-result')
+
+                }}/>
+            </div>
+
         </div>
     </>)
 }

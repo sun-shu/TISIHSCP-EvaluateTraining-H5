@@ -2,6 +2,11 @@ import {NavBar, Rate} from "antd-mobile";
 import React from 'react';
 import Canvas from '@antv/f-react';
 import {Area, Axis, Chart, Line, Point} from '@antv/f2';
+import {LeftOutline, RightOutline} from "antd-mobile-icons";
+
+import {history} from "umi";
+
+import StarIcon from "@/assets/icon/star.png";
 
 interface CognitionScoreResultProps {
     result: string;
@@ -22,6 +27,7 @@ const CognitionScoreResultComponent = ({result, score}) => {
                     </div>
                 </div>
                 <div className="justify-start items-end gap-1 flex">
+                    <img src={StarIcon} width={32} height={32}/>
                     <div className="text-zinc-800 text-base font-normal font-['Alibaba PuHuiTi 3.0'] leading-snug">X
                     </div>
                     <div className="text-zinc-800 text-5xl font-bold font-['Alibaba PuHuiTi 3.0'] leading-10">16</div>
@@ -49,38 +55,33 @@ const CognitionChartResultComponent = () => {
             score: 70,
         },
         {
-            item: 'opment',
+            item: '地点定向力',
             score: 60,
         },
 
         {
-            item: 'Marketing',
+            item: '视空间能力',
             score: 50,
         },
 
         {
-            item: 'Users',
+            item: '语言能力',
             score: 40,
         },
 
         {
-            item: 'Test',
+            item: '延迟记忆',
             score: 60,
         },
 
         {
-            item: 'Language',
+            item: '注意力和计算力',
             score: 70,
         },
 
         {
-            item: 'Technology',
+            item: '即刻记忆',
             score: 70,
-        },
-
-        {
-            item: 'Support',
-            score: 60,
         },
     ];
 
@@ -126,7 +127,6 @@ const CognitionChartResultComponent = () => {
                     <Line x="item" y="score" color="#D8B438"/>
                     <Point x="item" y="score" color="#D8B438"/>
                     <Area x="item" y="score" color="#D8B438"/>
-
                 </Chart>
             </Canvas>
         </div>
@@ -173,8 +173,6 @@ const CognitionStarResultComponent = () => {
 }
 
 const CognitionResultPage = () => {
-
-
     return (<>
         <div className="h-screen">
             <NavBar backArrow={false}
@@ -184,12 +182,22 @@ const CognitionResultPage = () => {
                 </div>
             </NavBar>
             <div style={{
-                height: 'calc(100vh - 50px)',
+                height: 'calc(100vh - 80px)',
             }} className="w-full  p-[16px] flex-col justify-start  gap-4 inline-flex bg-white overflow-y-scroll">
 
                 <CognitionScoreResultComponent result="轻度认知症" score={16}/>
                 <CognitionChartResultComponent/>
                 <CognitionStarResultComponent/>
+            </div>
+
+            <div className="flex w-full justify-between px-[24px] bg-white h-[35px] align-middle ">
+                <LeftOutline fontSize={24} color="#BFA671" onClick={() => {
+                    history.push('/evaluate/train-plan')
+                }}/>
+
+                <RightOutline color="#BFA671" fontSize={24} onClick={() => {
+                    history.push('/evaluate/train-result')
+                }}/>
             </div>
         </div>
 

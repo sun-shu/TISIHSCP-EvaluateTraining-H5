@@ -1,5 +1,7 @@
 import {NavBar} from "antd-mobile";
 import React from "react";
+import {LeftOutline, RightOutline} from "antd-mobile-icons";
+import {history} from "@@/core/history";
 
 const CognitiveTrainingOverviewComponent = () => {
 
@@ -116,16 +118,28 @@ const CognitiveTrainingReportPage = () => {
             <NavBar backArrow={false}
                     className=" bg-gradient-to-r from-[#E1CB9C] to-[#BFA671] h-[50px]  w-full">
                 <div
-                    className=" text-zinc-900 text-base font-semibold  leading-snug">认知评估结果
+                    className=" text-zinc-900 text-base font-semibold  leading-snug">认知训练报告
                 </div>
             </NavBar>
             <div style={{
-                height: 'calc(100vh - 50px)',
+                height: 'calc(100vh - 80px)',
             }}
                  className="w-full   gap-4   overflow-y-scroll bg-white ">
                 <CognitiveTrainingOverviewComponent/>
 
                 <CognitiveTrainingListComponent/>
+            </div>
+
+            <div className="flex w-full justify-between px-[24px] bg-white h-[35px] align-middle ">
+                <LeftOutline fontSize={24} color="#BFA671" onClick={() => {
+                    history.push('/evaluate/train-result')
+
+                }}/>
+
+                <RightOutline color="#BFA671" fontSize={24} onClick={() => {
+                    history.push('/evaluate/train-plan')
+
+                }}/>
             </div>
         </div>
     </>)

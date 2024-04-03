@@ -3,6 +3,8 @@ import React from 'react';
 import UpArrowIcon from "@/assets/icon/up-arrow.png";
 import DownArrowIcon from "@/assets/icon/down-arrow.png";
 import EqualArrowIcon from "@/assets/icon/equal.png";
+import {LeftOutline, RightOutline} from "antd-mobile-icons";
+import {history} from "@@/core/history";
 
 const iconMap = {
     up: UpArrowIcon,
@@ -69,11 +71,11 @@ const FamilyAffectionResultPage = () => {
             <NavBar backArrow={false}
                     className="bg-white bg-gradient-to-r from-[#E1CB9C] to-[#BFA671] h-[50px]  w-full">
                 <div
-                    className=" text-zinc-900 text-base font-semibold  leading-snug">认知评估结果
+                    className=" text-zinc-900 text-base font-semibold  leading-snug">亲情训练认知
                 </div>
             </NavBar>
             <div style={{
-                height: 'calc(100vh - 50px)',
+                height: 'calc(100vh - 80px)',
             }}
                  className="w-full  p-[16px]   gap-4  bg-white overflow-y-scroll ">
 
@@ -83,6 +85,16 @@ const FamilyAffectionResultPage = () => {
                         return <FamilyAffectionResultItemComponent item={item}/>
                     })}
                 </div>
+            </div>
+
+            <div className="flex w-full justify-between px-[24px] bg-white h-[35px] align-middle ">
+                <LeftOutline fontSize={24} color="#BFA671" onClick={() => {
+                    history.push('/evaluate/evaluate-result')
+                }}/>
+
+                <RightOutline color="#BFA671" fontSize={24} onClick={() => {
+                    history.push('/evaluate/train-report')
+                }}/>
             </div>
         </div>
 
