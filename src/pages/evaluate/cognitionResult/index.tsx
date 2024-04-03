@@ -117,6 +117,11 @@ const CognitionChartResultComponent = () => {
                         }}
                         formatter={() => {
                         }}
+                        animation={{
+                            'in-out-sine': {
+                                duration: 5000,
+                            },
+                        }}
                     />
                     <Line x="item" y="score" color="#D8B438"/>
                     <Point x="item" y="score" color="#D8B438"/>

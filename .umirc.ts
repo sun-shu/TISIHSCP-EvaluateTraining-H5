@@ -33,6 +33,8 @@ export default defineConfig({
                 },
                 {path: '/evaluate/cognition-result', component: 'evaluate/cognitionResult/index'},
                 {path: '/evaluate/family-affection-result', component: 'evaluate/familyAffectionResult/index'},
+                {path: '/evaluate/cognitive-training-report', component: 'evaluate/cognitiveTrainingReport/index'},
+                {path: '/evaluate/training-plan', component: 'evaluate/trainingPlan/index'},
             ],
         },
         {path: '/*', component: '@/pages/404.tsx'},
