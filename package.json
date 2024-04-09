@@ -7,8 +7,11 @@
     "postinstall": "umi setup",
     "prepare": "husky install",
     "setup": "umi setup",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "lint:pritter": "prettier --write src/",
+    "openapi": "umi openapi"
   },
+  "name": "tisihscp-h5",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,css,less}": [
       "umi lint"
@@ -27,6 +30,7 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "js-cookie": "^3.0.5",
+    "swagger-ui-dist": "^5.13.0",
     "umi": "^4.1.0",
     "zustand": "^4.5.2"
   },
@@ -36,6 +40,7 @@
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
     "@umijs/lint": "^4.1.0",
+    "@umijs/max-plugin-openapi": "^2.0.3",
     "@umijs/plugins": "^4.1.0",
     "eslint": "^8.56.0",
     "husky": "^8",
