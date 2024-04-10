@@ -78,11 +78,11 @@ export default defineConfig({
 			changeOrigin: true,
 			pathRewrite: { '^/api': '' },
 		},
-		// '/hcsp-gateway': {
-		// 	target: 'http://143.64.23.172/hcsp-gateway',
-		// 	changeOrigin: true,
-		// 	pathRewrite: { '^/hcsp-gateway': '' },
-		// },
+		'/hcsp-gateway': {
+			target: 'http://143.64.23.172/hcsp-gateway',
+			changeOrigin: true,
+			pathRewrite: { '^/hcsp-gateway': '' },
+		},
 		// ApiFox 本地MOCK服务
 		'/hcsp-gateway/baseApi/v1': {
 			target: 'http://127.0.0.1:4523/m1/4258309-0-e0f42e91',

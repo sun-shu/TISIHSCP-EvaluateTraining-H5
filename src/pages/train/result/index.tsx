@@ -1,5 +1,5 @@
 import { NavBar } from 'antd-mobile';
-import React, { useEffect } from 'react';
+import React from 'react';
 import UpArrowIcon from '@/assets/icon/up-arrow.png';
 import DownArrowIcon from '@/assets/icon/down-arrow.png';
 import EqualArrowIcon from '@/assets/icon/equal.png';
@@ -7,20 +7,21 @@ import { LeftOutline, RightOutline } from 'antd-mobile-icons';
 import { history, useMatch } from 'umi';
 import { useSearchParams } from '@@/exports';
 import useLoadData from './hooks/useLoadData';
+import { TrendEnum } from '@/pages/train/plan/enums/TrendEnum';
 
 
 const iconMap = {
-	up: UpArrowIcon,
-	down: DownArrowIcon,
-	equal: EqualArrowIcon,
+	[TrendEnum.UP]: UpArrowIcon,
+	[TrendEnum.DOWN]: DownArrowIcon,
+	[TrendEnum.EQUAL]: EqualArrowIcon,
 };
 
 const textColorClassMap = {
-	up: 'text-lime-500',
-	down: 'text-zinc-400',
-	equal: 'text-zinc-400',
-
+	[TrendEnum.UP]: 'text-lime-500',
+	[TrendEnum.DOWN]: 'text-zinc-400',
+	[TrendEnum.EQUAL]: 'text-zinc-400',
 };
+
 const FamilyAffectionResultItemComponent = ({ item }) => {
 	const { itemName, itemResult, trend, trendDesc } = item;
 	return (<>
@@ -32,9 +33,11 @@ const FamilyAffectionResultItemComponent = ({ item }) => {
 			<div className="justify-start items-center gap-1 inline-flex">
 				<div
 
-					className={`${textColorClassMap[trend]} items-center text-base font-normal flex align-bottom gap-[8px] line-clamp-2`}>
-					<img src={iconMap[trend]} alt="" width={15} height={10} className="h-[8px] line-clamp-2" />
-					{trendDesc}
+					className={`${textColorClassMap[trend]} flex items-center text-base font-normal align-bottom gap-[8px] `}>
+					<img src={iconMap[trend]} alt="" width={15} height={10} className="h-[8px]" />
+					<span>
+						{trendDesc}
+					</span>
 				</div>
 			</div>
 		</div>
@@ -74,13 +77,6 @@ const ResultPage = () => {
 	const [searchParams] = useSearchParams();
 
 	const userToken = searchParams.get('userToken');
-
-	useEffect(() => {
-		if (userToken) {
-			// 加载数据
-		}
-	}, []);
-
 
 	const { data } = useLoadData({ customerId, userToken });
 

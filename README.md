@@ -33,5 +33,12 @@
 
 > TODO:
 
-- 接口一键mock
+- 接口拉取及MOCK
+
+> 接口拉取使用的是umi的@umijs/max-plugin-openapi
+> mock使用ApiFox的mock服务,通过切换代理来实现MOCK
+>
+
+- 接口一键mock √
 - 导航栏组件抽取
+- 

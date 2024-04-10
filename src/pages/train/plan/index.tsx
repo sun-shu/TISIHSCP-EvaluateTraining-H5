@@ -1,13 +1,16 @@
 import { Badge, Button, Calendar, CalendarPickerRef, NavBar, Popup } from 'antd-mobile';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ChangDateIcon from '@/assets/icon/change-date.png';
 import dayjs from 'dayjs';
 import { LeftOutline, RightOutline } from 'antd-mobile-icons';
 import { history, useMatch } from 'umi';
 import { useSearchParams } from '@@/exports';
-import useLoadData from './hooks/useLoadData';
+import useLoadPlanInfoData from './hooks/useLoadPlanInfoData';
+import useLoadPlanTaskData from './hooks/useLoadPlanTaskData';
+import EmptyDataImg from '@/assets/empty-data.png';
 
 const CognitiveTrainingOverviewComponent = ({ data }) => {
+	console.log('data', data);
 
 	return (<>
 		<div className="w-full   bg-gradient-to-r from-[#E1CB9C] to-[#BFA671] relative h-[80px] ">
@@ -18,7 +21,7 @@ const CognitiveTrainingOverviewComponent = ({ data }) => {
 					<div className="justify-start items-end inline-flex">
 
 						<div
-							className="text-gray-600 text-sm font-normal font-['Alibaba PuHuiTi 3.0']">{data.startDate}
+							className="text-gray-600 text-sm font-normal font-['Alibaba PuHuiTi 3.0']">{dayjs(data.startDate)?.format('YYYY-MM-DD')}
 						</div>
 					</div>
 				</div>
@@ -28,7 +31,7 @@ const CognitiveTrainingOverviewComponent = ({ data }) => {
 					<div className="justify-start items-end inline-flex">
 
 						<div
-							className="text-gray-600 text-sm font-normal font-['Alibaba PuHuiTi 3.0']">{data.endDate}
+							className="text-gray-600 text-sm font-normal font-['Alibaba PuHuiTi 3.0']">{dayjs(data.endDate)?.format('YYYY-MM-DD')}
 						</div>
 					</div>
 				</div>
@@ -37,7 +40,8 @@ const CognitiveTrainingOverviewComponent = ({ data }) => {
 					<div className="text-gray-600 text-sm font-bold font-['Alibaba PuHuiTi 3.0']">整体完成度</div>
 					<div className="justify-start items-baseline gap-[2px] inline-flex">
 						<div
-							className="text-amber-400 text-2xl font-bold font-['Alibaba PuHuiTi 3.0'] leading-normal">{data.finishCount}
+							className="text-amber-400 text-2xl font-bold font-['Alibaba PuHuiTi 3.0'] leading-normal">
+							{Math.round(data.finishCount / data.totalCount * 100)}
 						</div>
 						<div
 							className="text-gray-600  text-sm font-normal font-['Alibaba PuHuiTi 3.0']">%
@@ -49,7 +53,7 @@ const CognitiveTrainingOverviewComponent = ({ data }) => {
 	</>);
 };
 
-const DatePickerComponent = ({ dateRange, currentDate, setCurrentDate }) => {
+const DatePickerComponent = ({ hasDataDateList, currentDate, setCurrentDate }) => {
 
 	const [val, setVal] = useState<Date | null>(currentDate);
 	const [visible1, setVisible1] = useState(false);
@@ -61,7 +65,7 @@ const DatePickerComponent = ({ dateRange, currentDate, setCurrentDate }) => {
 			className="w-full mt-[40px] h-[52px] px-6 py-3 bg-white shadow flex-col justify-start items-end gap-4 inline-flex">
 			<div className="self-stretch justify-between items-center inline-flex">
 				<div
-					className="text-gray-600 text-xl font-bold font-['Alibaba PuHuiTi 3.0']">{dayjs(currentDate).format('YYYY-MM-DD')}
+					className="text-gray-600 text-xl font-bold font-['Alibaba PuHuiTi 3.0']">{currentDate && dayjs(currentDate).format('YYYY-MM-DD')}
 				</div>
 				<div className="w-6 h-6 relative" onClick={() => {
 					setVisible1(true);
@@ -91,13 +95,17 @@ const DatePickerComponent = ({ dateRange, currentDate, setCurrentDate }) => {
 						selectionMode="single"
 						defaultValue={currentDate}
 						shouldDisableDate={(date) => {
-							const dates = [16, 17, 18, 19];
-							const d = dayjs(date).date();
+							//hasDataDateList是一个时间戳集合，如果包含date这个日期(完整日期)，那么就是可选的，否则不可选
+							const dates = hasDataDateList.map((item) => dayjs(item).format('YYYY-MM-DD'));
+							const d = dayjs(date).format('YYYY-MM-DD');
+							console.log('dates', dates, d);
 							return !dates.includes(d);
 						}}
 						renderLabel={date => {
-							const dates = [16, 17, 18, 19];
-							const d = dayjs(date).date();
+							//hasDataDateList是一个时间戳集合，如果包含date这个日期，那么返回一个Badge，否则返回null
+
+							const dates = hasDataDateList.map((item) => dayjs(item).format('YYYY-MM-DD'));
+							const d = dayjs(date).format('YYYY-MM-DD');
 							if (dates.includes(d)) {
 								return (
 									<Badge color="#87d068" content={Badge.dot} />
@@ -109,6 +117,7 @@ const DatePickerComponent = ({ dateRange, currentDate, setCurrentDate }) => {
 
 				<div className="relative bg-white pr-[24px] text-right" onClick={() => {
 					setVisible1(false);
+					console.log('val', dayjs(val).format('YYYY-MM-DD HH:mm:ss'));
 					setCurrentDate(val);
 				}}>
 					<Button color="primary">确认</Button>
@@ -120,71 +129,51 @@ const DatePickerComponent = ({ dateRange, currentDate, setCurrentDate }) => {
 	</>);
 };
 
-const TrainingPlanItemListComponent = () => {
-
-	const amList = [
-		{
-			title: '怀旧认知训练',
-		},
-		{
-			title: '怀旧认知训练',
-		},
-		{
-			title: '怀旧认知训练',
-		},
-	];
-
-	const pmList = [
-		{
-			title: '怀旧认知训练',
-		},
-		{
-			title: '怀旧认知训练',
-		},
-		{
-			title: '怀旧认知训练',
-		},
-	];
+const TrainingPlanItemListComponent = ({ data = {} }) => {
+	console.log('TrainingPlanItemListComponent data', data);
+	const { amDataList = [], pmDataList = [] } = data;
 
 	return (<>
 		<div className="w-full">
-			<div
-				className=" mx-3 justify-start items-center gap-2 inline-flex  py-[24px] border-b-[#F5ECCD] border-b-2">
-				<div className="text-zinc-800 text-base font-normal font-['Alibaba PuHuiTi 3.0'] leading-snug">上午
-				</div>
-				<div className="grow shrink basis-0 flex-col justify-start items-center gap-2.5 inline-flex">
-					{amList.map((item, index) => {
-						return (
-							<div
-								className="w-[311px] h-[38px] px-3 py-2 bg-amber-400 bg-opacity-5 border-l-2 border-[#D8B438] justify-start items-start gap-6 inline-flex">
-								<div className="text-gray-600 text-base font-bold font-['Alibaba PuHuiTi 3.0']">综合认知训练
+			{
+				amDataList.length > 0 && <div
+					className=" mx-3 justify-start items-center gap-2 inline-flex  py-[24px] border-b-[#F5ECCD] border-b-2">
+					<div className="text-zinc-800 text-base font-normal font-['Alibaba PuHuiTi 3.0'] leading-snug">上午
+					</div>
+					<div className="grow shrink basis-0 flex-col justify-start items-center gap-2.5 inline-flex">
+						{amDataList.map((item, index) => {
+							return (
+								<div
+									className="w-[311px] h-[38px] px-3 py-2 bg-amber-400 bg-opacity-5 border-l-2 border-[#D8B438] justify-start items-start gap-6 inline-flex">
+									<div className="text-gray-600 text-base font-bold font-['Alibaba PuHuiTi 3.0']">{item.className}
+									</div>
+									<div className="text-gray-600 text-base font-normal font-['Alibaba PuHuiTi 3.0']">
+									</div>
 								</div>
-								<div className="text-gray-600 text-base font-normal font-['Alibaba PuHuiTi 3.0']">7/12
-								</div>
-							</div>
-						);
-					})}
+							);
+						})}
+					</div>
 				</div>
-			</div>
+			}
 
 
-			<div className=" px-3 justify-start items-center gap-2 inline-flex  py-[24px]">
+			{pmDataList.length > 0 && <div className=" px-3 justify-start items-center gap-2 inline-flex  py-[24px]">
 				<div className="text-zinc-800 text-base font-normal font-['Alibaba PuHuiTi 3.0'] leading-snug">下午
 				</div>
 				<div className="grow shrink basis-0 flex-col justify-start items-center gap-2.5 inline-flex">
-					{pmList.map((item, index) => {
+					{pmDataList.map((item, index) => {
 						return (
 							<div
 								className="w-[311px] h-[38px] px-3 py-2 bg-amber-400 bg-opacity-5 border-l-2 border-[#D8B438] justify-start items-start gap-6 inline-flex">
-								<div className="text-gray-600 text-base font-bold font-['Alibaba PuHuiTi 3.0']">综合认知训练
+								<div className="text-gray-600 text-base font-bold font-['Alibaba PuHuiTi 3.0']">{item.className}
 								</div>
-								<div className="text-gray-600 text-base font-normal font-['Alibaba PuHuiTi 3.0']">7/12
+								<div className="text-gray-600 text-base font-normal font-['Alibaba PuHuiTi 3.0']">
 								</div>
 							</div>
 						);
 					})}
 				</div>
-			</div>
+			</div>}
 		</div>
 
 
@@ -195,10 +184,10 @@ const TrainingPlanItemListComponent = () => {
 const NotInPlanComponent = () => {
 
 	return (<>
-		<div className="w-[311px] h-[216px] flex-col justify-start items-center gap-8 inline-flex">
-			<div className="w-[120px] h-[120px] relative" />
+		<div className="w-full h-full flex-center flex-col gap-8 inline-flex p-5">
+			<img src={EmptyDataImg} width={120} height={120} />
 			<div
-				className="w-[311px] text-gray-600 text-xl font-medium font-['Alibaba PuHuiTi 3.0'] leading-loose">长者当前训练计划已完成，请再次进行评估。
+				className="w-full text-gray-600 text-xl font-medium font-['Alibaba PuHuiTi 3.0'] leading-loose">长者当前训练计划已完成，请再次进行评估。
 			</div>
 		</div>
 	</>);
@@ -208,7 +197,7 @@ const NotHasTaskComponent = () => {
 
 	return (<>
 		<div
-			className="w-[311px] text-gray-600 text-lg font-medium font-['Alibaba PuHuiTi 3.0'] leading-loose">根据训练计划的安排，今天开始已经没有更多训练任务了，可以给长者做自由训练喔~
+			className="w-full p-5 text-gray-600 text-lg font-medium font-['Alibaba PuHuiTi 3.0'] leading-loose">根据训练计划的安排，今天开始已经没有更多训练任务了，可以给长者做自由训练喔~
 		</div>
 	</>);
 };
@@ -218,38 +207,39 @@ const PlanPage = () => {
 	const { customerId } = params;
 
 	const [searchParams] = useSearchParams();
-
 	const userToken = searchParams.get('userToken');
 
+	const locationParams = { customerId, userToken };
+
+	const [currentDate, setCurrentDate] = useState();
+
+	const { data: planData } = useLoadPlanInfoData(locationParams);
+	const { data: taskData } = useLoadPlanTaskData(locationParams, currentDate);
+
+	console.log('taskData', taskData);
+	const isInPlan = useMemo(() => {
+		const today = dayjs().valueOf();
+		const startDate = planData?.startDate;
+		const endDate = planData?.endDate;
+
+		console.log('21', today, startDate, endDate, !!(today > startDate && today < endDate));
+		return !!(today > startDate && today < endDate);
+	}, [planData]);
+
+	const currentDateInit = useMemo(() => {
+		// 判断是否有今天或者未来的任务
+		const today = dayjs().format('YYYY-MM-DD');
+		const hasDataDateList = planData?.hasDataDateList;
+		const hasToday = hasDataDateList?.includes(today);
+		const hasFuture = hasDataDateList?.find((item) => dayjs(item).isAfter(dayjs()));
+		return hasToday || hasFuture;
+	}, [planData]);
+
 	useEffect(() => {
-		if (userToken) {
-			// 加载数据
-		}
-	}, []);
+		//根据planData?.hasDataDateList时间戳列表中今天或者距离今天最近的未来时间来设置currentDate 时间戳即可
+		isInPlan && currentDateInit && setCurrentDate(currentDateInit);
+	}, [isInPlan, currentDateInit]);
 
-
-	const { data } = useLoadData({ customerId, userToken });
-
-	const [currentDate, setCurrentDate] = useState(new Date('2023-06-16'));
-
-	const hasDataDate = ['2023-06-16', '2023-06-17', '2023-06-18', '2023-06-19'];
-	// 判断今天是否在可选日期列表内，如果不在，那么展示距离最近的下一个可选日期，如果没有下一个可选日期，那么展示空页面1
-	// 判断今天是否已经大于可选日期列表，如果大于，那么展示空页面2
-	const today = new Date();
-	const dates = [16, 17, 18, 19];
-	const todayDate = dayjs(today).date();
-	if (!dates.includes(todayDate)) {
-		const nextDate = dates.find((d) => d > todayDate);
-		if (nextDate) {
-			today.setDate(nextDate);
-		} else {
-			// 展示空页面1
-		}
-	}
-	console.log(today);
-	if (today > new Date('2023-06-19')) {
-		// 展示空页面2
-	}
 
 	const queryParams = new URLSearchParams({
 		userToken,
@@ -257,6 +247,28 @@ const PlanPage = () => {
 	const preLink = `/train/report/${customerId}?${queryParams}`;
 	const nextLink = `/evaluate/result/${customerId}?${queryParams}`;
 
+	const changeCurrentDate = (date) => {
+		// 根据planData?.hasDataDateList时间戳列表设置时间
+		const hasDataDateList = planData?.hasDataDateList;
+		const targetDate = hasDataDateList.find((item) => dayjs(item).isSame(date, 'day'));
+		setCurrentDate(targetDate);
+	};
+	const ChildrenComponent = () => {
+		if (!isInPlan) {
+			return <NotInPlanComponent />;
+		}
+
+		return (<>
+			<CognitiveTrainingOverviewComponent data={planData} />
+			<DatePickerComponent currentDate={currentDate} setCurrentDate={changeCurrentDate}
+													 hasDataDateList={planData?.hasDataDateList} />
+			{
+				isInPlan && !currentDate ? <NotHasTaskComponent /> : <TrainingPlanItemListComponent data={taskData} />
+			}
+
+		</>);
+
+	};
 	return (<>
 		<div className="h-screen">
 			<NavBar backArrow={false}
@@ -265,17 +277,12 @@ const PlanPage = () => {
 					className=" text-zinc-900 text-base font-semibold  leading-snug">训练计划
 				</div>
 			</NavBar>
+
 			<div style={{
 				height: 'calc(100vh - 80px)',
 			}}
 					 className="w-full   gap-4   overflow-y-scroll bg-white ">
-				<CognitiveTrainingOverviewComponent data={data} />
-				<DatePickerComponent currentDate={currentDate} setCurrentDate={setCurrentDate}
-														 dateRange={[new Date('2020-06-16'), new Date('2026-06-16')]} />
-
-				<TrainingPlanItemListComponent />
-
-
+				<ChildrenComponent />
 			</div>
 
 			<div className="flex w-full justify-between px-[24px] bg-white h-[35px] align-middle ">
