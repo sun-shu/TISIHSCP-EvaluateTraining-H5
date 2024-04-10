@@ -59,7 +59,6 @@ const CognitiveTrainingListComponent = ({ data }) => {
 	return (<>
 
 		<div className="mt-[28px]">
-
 			<div className="w-[351px] h-[38px] px-[18px]  rounded-xl justify-between items-start inline-flex">
 				<div
 					className="text-zinc-800 text-lg font-bold font-['Alibaba PuHuiTi 3.0'] leading-snug">本月训练数据
